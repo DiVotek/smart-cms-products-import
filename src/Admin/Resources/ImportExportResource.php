@@ -25,7 +25,7 @@ class RequiredaFieldTemplatesResource extends Resource
                     ->required(),
                 CheckboxList::make('fields')
                     ->options([
-                        Field::all()->pluck('name', 'id')
+                        Field::all()->pluck('name', 'id'),
                     ])
                     ->columns(2)
                     ->required(),

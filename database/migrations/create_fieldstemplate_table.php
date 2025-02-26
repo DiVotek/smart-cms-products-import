@@ -5,7 +5,8 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use SmartCms\ImportExport\Models\RequiredFieldTemplates;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create(RequiredFieldTemplates::getDb(), function (Blueprint $table) {

@@ -7,14 +7,14 @@ use SmartCms\Core\Models\BaseModel;
 
 class RequiredFieldTemplates extends BaseModel
 {
-   use HasFactory;
+    use HasFactory;
 
-   protected $fillable = [
-      'name',
-      'fields',
-   ];
+    protected $fillable = [
+        'name',
+        'fields',
+    ];
 
-   protected $casts = [
-      'fields' => 'array',
-   ];
+    protected $casts = [
+        'fields' => 'array',
+    ];
 }

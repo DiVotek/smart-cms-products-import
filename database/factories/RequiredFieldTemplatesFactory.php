@@ -12,7 +12,7 @@ class RequiredFieldTemplatesFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->word . ' Template',
+            'name' => $this->faker->word.' Template',
             'fields' => json_encode([
                 'name' => 'Product Name',
                 'price' => 'Price',

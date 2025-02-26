@@ -13,8 +13,5 @@ class ImportExportServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/Routes/web.php');
     }
 
-    public function boot()
-    {
-
-    }
+    public function boot() {}
 }
