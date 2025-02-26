@@ -1,5 +1,5 @@
 <?php
 
-use SmartCms\Reviews\Tests\TestCase;
+use SmartCms\ImportExport\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);

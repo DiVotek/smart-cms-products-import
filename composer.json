@@ -1,13 +1,13 @@
 {
-    "name": "smart-cms/reviews",
+    "name": "smart-cms/importexport",
     "version": "1.0.0",
-    "description": "This is reviews package for smart-cms/store",
+    "description": "This is importexport package for smart-cms/store",
     "keywords": [
         "SmartCms",
         "laravel",
-        "reviews"
+        "importexport"
     ],
-    "homepage": "https://github.com/smart-cms/reviews",
+    "homepage": "https://github.com/smart-cms/importexport",
     "license": "MIT",
     "authors": [
         {
@@ -36,13 +36,13 @@
     },
     "autoload": {
         "psr-4": {
-            "SmartCms\\Reviews\\": "src/",
-            "SmartCms\\Reviews\\Database\\Factories\\": "database/factories/"
+            "SmartCms\\ImportExport\\": "src/",
+            "SmartCms\\ImportExport\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "SmartCms\\Reviews\\Tests\\": "tests/",
+            "SmartCms\\ImportExport\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -64,10 +64,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "SmartCms\\Reviews\\ReviewsServiceProvider"
+                "SmartCms\\ImportExport\\RImportExportServiceProvider"
             ],
             "aliases": {
-                "Reviews": "SmartCms\\Reviews\\Facades\\Reviews"
+                "ImportExport": "SmartCms\\ImportExport\\Facades\\ImportExport"
             }
         }
     },

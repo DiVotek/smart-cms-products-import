@@ -1,10 +1,10 @@
 <?php
 
-namespace SmartCms\Reviews\Tests;
+namespace SmartCms\ImportExport\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use SmartCms\Reviews\ReviewsServiceProvider;
+use SmartCms\ImportExport\ImportExportServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -16,14 +16,14 @@ class TestCase extends Orchestra
         $this->loadMigrationsFrom(__DIR__.'/../vendor/smart-cms/core/database/migrations');
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'SmartCms\\Reviews\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'SmartCms\\ImportExport\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 
     protected function getPackageProviders($app)
     {
         return [
-            ReviewsServiceProvider::class,
+            ImportExportServiceProvider::class,
             \SmartCms\Store\StoreServiceProvider::class,
             \SmartCms\Core\SmartCmsPanelManager::class,
             \SmartCms\Core\SmartCmsServiceProvider::class,
