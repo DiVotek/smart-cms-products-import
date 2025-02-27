@@ -67,6 +67,21 @@ class ImportExportService
             array_unshift($newFields, 'id');
             $this->template->fields = $newFields;
         }
+        if (! in_array('name', $this->template->fields)) {
+            $newFields = $this->template->fields;
+            array_unshift($newFields, 'name');
+            $this->template->fields = $newFields;
+        }
+        if (! in_array('price', $this->template->fields)) {
+            $newFields = $this->template->fields;
+            array_unshift($newFields, 'price');
+            $this->template->fields = $newFields;
+        }
+        if (! in_array('category_id', $this->template->fields)) {
+            $newFields = $this->template->fields;
+            array_unshift($newFields, 'category_id');
+            $this->template->fields = $newFields;
+        }
         foreach ($this->template->fields as $field) {
             $value = null;
             switch ($field) {
@@ -281,7 +296,19 @@ class ImportExportService
     }
     private function createProduct(array $product): int
     {
-        $category = Category::query()->where('name', $product['category_id'])->first();
+        $category_id = $product['category_id'] ?? null;
+        $name = $product['name'] ?? null;
+        $price = $product['price'] ?? null;
+        if (!$name || $name == '') {
+            throw new \Exception('Name is required');
+        }
+        if (!$price || $price == '') {
+            throw new \Exception('Price is required');
+        }
+        if (!$category_id || $category_id == '') {
+            throw new \Exception('Category is required');
+        }
+        $category = Category::query()->where('name', $category_id)->first();
         if (!$category) {
             throw new \Exception('Category not found');
         }
