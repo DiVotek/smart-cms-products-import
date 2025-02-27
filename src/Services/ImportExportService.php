@@ -6,12 +6,12 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use SmartCms\ImportExport\Models\ImportTemplate;
-use SmartCms\Store\Models\Product;
 use Illuminate\Support\Str;
 use SmartCms\Core\Models\Language;
+use SmartCms\ImportExport\Models\ImportTemplate;
 use SmartCms\Store\Models\AttributeValue;
 use SmartCms\Store\Models\Category;
+use SmartCms\Store\Models\Product;
 use SmartCms\Store\Models\StockStatus;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -23,6 +23,7 @@ class ImportExportService
     {
         $this->template = $template;
     }
+
     public function export(?int $categoryId = null): StreamedResponse
     {
         $query = Product::query();
@@ -38,7 +39,7 @@ class ImportExportService
         });
         $headers = [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $this->template->name . '_' . now()->toDateTimeString() . '.csv"',
+            'Content-Disposition' => 'attachment; filename="'.$this->template->name.'_'.now()->toDateTimeString().'.csv"',
         ];
         $callback = function () use ($products) {
             $handle = fopen('php://output', 'w');
@@ -242,7 +243,7 @@ class ImportExportService
                     break;
                 case 'category_id':
                     $category = Category::query()->where('name', $value)->first();
-                    if (!$category) {
+                    if (! $category) {
                         throw new \Exception('Category not found');
                     }
                     $product->category_id = $category->id;
@@ -254,7 +255,7 @@ class ImportExportService
                     break;
                 case 'stock_status_id':
                     $stockStatus = StockStatus::query()->where('name', $value)->first();
-                    if (!$stockStatus) {
+                    if (! $stockStatus) {
                         throw new \Exception('Stock status not found');
                     }
                     $product->stock_status_id = $stockStatus->id;
@@ -266,16 +267,16 @@ class ImportExportService
                     $product->sorting = (int) $value;
                     break;
                 case 'status':
-                    $product->status = !!$value;
+                    $product->status = (bool) $value;
                     break;
                 case 'images':
                     // @todo Download images from urls
                     break;
                 case 'is_index':
-                    $product->is_index = !!$value;
+                    $product->is_index = (bool) $value;
                     break;
                 case 'is_merchant':
-                    $product->is_merchant = !!$value;
+                    $product->is_merchant = (bool) $value;
                     break;
                 case 'created_at':
                     $product->created_at = Carbon::parse($value ?? now());
@@ -294,6 +295,7 @@ class ImportExportService
         }
         $product->save();
     }
+
     private function createProduct(array $product): int
     {
         $category_id = $product['category_id'] ?? null;
@@ -315,10 +317,10 @@ class ImportExportService
         $slug = Str::slug($product['name']);
         if (Product::query()->where('slug', $slug)->exists()) {
             do {
-                $slug = $slug . '-' . Str::random(5);
+                $slug = $slug.'-'.Str::random(5);
             } while (Product::query()->where('slug', $slug)->exists());
         }
-        $entity = new Product();
+        $entity = new Product;
         $entity->name = $product['name'];
         $entity->slug = $slug;
         $entity->sku = $product['sku'];
@@ -327,7 +329,7 @@ class ImportExportService
         $entity->origin_price = $product['origin_price'];
         $entity->sorting = $product['sorting'] ?? 0;
         $images = explode(',', $product['images']);
-        if (!is_array($images)) {
+        if (! is_array($images)) {
             $images = [];
         }
         $entity->images = $images;
@@ -375,6 +377,7 @@ class ImportExportService
         $categories = explode(',', $product['categories']);
         $categoryIds = Category::query()->whereIn('name', $categories)->pluck('id') ?? [];
         $entity->categories()->sync($categoryIds);
+
         return $entity->id;
     }
 
@@ -386,20 +389,20 @@ class ImportExportService
             $description = null;
             $summary = null;
             $content = null;
-            if (isset($data['title_' . $lang])) {
-                $title = $data['title_' . $lang];
+            if (isset($data['title_'.$lang])) {
+                $title = $data['title_'.$lang];
             }
-            if (isset($data['description_' . $lang])) {
-                $description = $data['description_' . $lang];
+            if (isset($data['description_'.$lang])) {
+                $description = $data['description_'.$lang];
             }
-            if (isset($data['summary_' . $lang])) {
-                $summary = $data['summary_' . $lang];
+            if (isset($data['summary_'.$lang])) {
+                $summary = $data['summary_'.$lang];
             }
-            if (isset($data['heading_' . $lang])) {
-                $heading = $data['heading_' . $lang];
+            if (isset($data['heading_'.$lang])) {
+                $heading = $data['heading_'.$lang];
             }
-            if (isset($data['content_' . $lang])) {
-                $content = $data['content_' . $lang];
+            if (isset($data['content_'.$lang])) {
+                $content = $data['content_'.$lang];
             }
             if ($title) {
                 $entity->seo()->updateOrCreate([
@@ -418,11 +421,11 @@ class ImportExportService
     private function updateTransates(Product $entity, array $data): void
     {
         foreach (get_active_languages() as $lang) {
-            if (isset($data['name_' . $lang])) {
+            if (isset($data['name_'.$lang])) {
                 $entity->translatable()->updateOrCreate([
                     'language_id' => $lang->id,
                 ], [
-                    'value' => $data['name_' . $lang],
+                    'value' => $data['name_'.$lang],
                 ]);
             }
         }

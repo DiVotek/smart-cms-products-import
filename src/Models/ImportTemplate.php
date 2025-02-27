@@ -7,11 +7,11 @@ use SmartCms\Core\Models\BaseModel;
 
 class ImportTemplate extends BaseModel
 {
-   use HasFactory;
+    use HasFactory;
 
-   protected $guarded = [];
+    protected $guarded = [];
 
-   protected $casts = [
-      'fields' => 'array',
-   ];
+    protected $casts = [
+        'fields' => 'array',
+    ];
 }
