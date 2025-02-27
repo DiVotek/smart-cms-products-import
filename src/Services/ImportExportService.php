@@ -301,17 +301,17 @@ class ImportExportService
         $category_id = $product['category_id'] ?? null;
         $name = $product['name'] ?? null;
         $price = $product['price'] ?? null;
-        if (!$name || $name == '') {
+        if (! $name || $name == '') {
             throw new \Exception('Name is required');
         }
-        if (!$price || $price == '') {
+        if (! $price || $price == '') {
             throw new \Exception('Price is required');
         }
-        if (!$category_id || $category_id == '') {
+        if (! $category_id || $category_id == '') {
             throw new \Exception('Category is required');
         }
         $category = Category::query()->where('name', $category_id)->first();
-        if (!$category) {
+        if (! $category) {
             throw new \Exception('Category not found');
         }
         $slug = Str::slug($product['name']);

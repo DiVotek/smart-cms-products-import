@@ -26,20 +26,20 @@ class ImportTemplateResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-cloud-arrow-down';
 
-   public static function getNavigationSort(): ?int
-   {
-      return 100;
-   }
+    public static function getNavigationSort(): ?int
+    {
+        return 100;
+    }
 
-   public static function getNavigationBadge(): ?string
-   {
-      return static::getModel()::count();
-   }
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
-   public static function getNavigationGroup(): ?string
-   {
-      return _nav('system');
-   }
+    public static function getNavigationGroup(): ?string
+    {
+        return _nav('system');
+    }
 
     public static function form(Form $form): Form
     {
