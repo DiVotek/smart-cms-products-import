@@ -1,13 +1,13 @@
 {
-    "name": "smart-cms/importexport",
+    "name": "smart-cms/import-export",
     "version": "1.0.0",
-    "description": "This is importexport package for smart-cms/store",
+    "description": "This is import-export package for smart-cms/store",
     "keywords": [
         "SmartCms",
         "laravel",
-        "importexport"
+        "import-export"
     ],
-    "homepage": "https://github.com/smart-cms/importexport",
+    "homepage": "https://github.com/DiVotek/smart-cms-products-import",
     "license": "MIT",
     "authors": [
         {
@@ -47,8 +47,6 @@
         }
     },
     "scripts": {
-        "post-autoload-dump": "@composer run prepare",
-        "prepare": "@php vendor/bin/testbench package:discover --ansi",
         "analyse": "vendor/bin/phpstan analyse",
         "test": "vendor/bin/pest",
         "test-coverage": "vendor/bin/pest --coverage",
@@ -64,7 +62,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "SmartCms\\ImportExport\\RImportExportServiceProvider"
+                "SmartCms\\ImportExport\\ImportExportServiceProvider"
             ],
             "aliases": {
                 "ImportExport": "SmartCms\\ImportExport\\Facades\\ImportExport"
