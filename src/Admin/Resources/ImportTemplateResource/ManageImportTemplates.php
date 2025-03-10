@@ -4,9 +4,8 @@ namespace SmartCms\ImportExport\Admin\Resources\ImportTemplateResource;
 
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\ManageRecords;
 use Illuminate\Http\Request;
@@ -14,8 +13,6 @@ use SmartCms\ImportExport\Admin\Resources\ImportTemplateResource;
 use SmartCms\ImportExport\Models\ImportTemplate;
 use SmartCms\ImportExport\Services\ImportExportService;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Filament\Actions\ActionGroup;
-use Filament\Notifications\Notification;
 
 class ManageImportTemplates extends ManageRecords
 {
@@ -57,7 +54,7 @@ class ManageImportTemplates extends ManageRecords
                             Textarea::make('google_sheets_service_account_json')
                                 ->label('Service Account JSON Key')
                                 ->helperText('Paste the entire JSON content of your service account key file')
-                                ->visible(fn($get) => $get('google_sheets_enabled'))
+                                ->visible(fn ($get) => $get('google_sheets_enabled'))
                                 ->columnSpanFull(),
                         ]);
                 }),

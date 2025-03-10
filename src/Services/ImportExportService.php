@@ -5,7 +5,12 @@ namespace SmartCms\ImportExport\Services;
 use Carbon\Carbon;
 use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
-use Google_Client;
+use Google\Service\Drive;
+use Google\Service\Sheets;
+use Google\Service\Sheets\BatchUpdateSpreadsheetRequest;
+use Google\Service\Sheets\ClearValuesRequest;
+use Google\Service\Sheets\Spreadsheet;
+use Google\Service\Sheets\ValueRange;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -17,13 +22,6 @@ use SmartCms\Store\Models\Category;
 use SmartCms\Store\Models\Product;
 use SmartCms\Store\Models\StockStatus;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Google\Service\Sheets;
-use Google\Service\Sheets\Spreadsheet;
-use Google\Service\Sheets\ClearValuesRequest;
-use Google\Service\Sheets\ValueRange;
-use Google\Service\Sheets\BatchUpdateSpreadsheetRequest;
-use Google\Service\Drive;
-use SmartCms\Core\Models\Admin;
 
 class ImportExportService
 {
@@ -49,7 +47,7 @@ class ImportExportService
         });
         $headers = [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $this->template->name . '_' . now()->toDateTimeString() . '.csv"',
+            'Content-Disposition' => 'attachment; filename="'.$this->template->name.'_'.now()->toDateTimeString().'.csv"',
         ];
         $callback = function () use ($products) {
             $handle = fopen('php://output', 'w');
@@ -82,7 +80,7 @@ class ImportExportService
         $orderedFields[] = 'origin_price';
 
         foreach ($originalFields as $field) {
-            if (!in_array($field, $orderedFields)) {
+            if (! in_array($field, $orderedFields)) {
                 $orderedFields[] = $field;
             }
         }
@@ -326,7 +324,7 @@ class ImportExportService
         $slug = Str::slug($product['name']);
         if (Product::query()->where('slug', $slug)->exists()) {
             do {
-                $slug = $slug . '-' . Str::random(5);
+                $slug = $slug.'-'.Str::random(5);
             } while (Product::query()->where('slug', $slug)->exists());
         }
         $entity = new Product;
@@ -365,20 +363,20 @@ class ImportExportService
             $description = null;
             $summary = null;
             $content = null;
-            if (isset($data['title_' . $lang->slug])) {
-                $title = $data['title_' . $lang->slug];
+            if (isset($data['title_'.$lang->slug])) {
+                $title = $data['title_'.$lang->slug];
             }
-            if (isset($data['description_' . $lang->slug])) {
-                $description = $data['description_' . $lang->slug];
+            if (isset($data['description_'.$lang->slug])) {
+                $description = $data['description_'.$lang->slug];
             }
-            if (isset($data['summary_' . $lang->slug])) {
-                $summary = $data['summary_' . $lang->slug];
+            if (isset($data['summary_'.$lang->slug])) {
+                $summary = $data['summary_'.$lang->slug];
             }
-            if (isset($data['heading_' . $lang->slug])) {
-                $heading = $data['heading_' . $lang->slug];
+            if (isset($data['heading_'.$lang->slug])) {
+                $heading = $data['heading_'.$lang->slug];
             }
-            if (isset($data['content_' . $lang->slug])) {
-                $content = $data['content_' . $lang->slug];
+            if (isset($data['content_'.$lang->slug])) {
+                $content = $data['content_'.$lang->slug];
             }
             if ($title) {
                 $entity->seo()->updateOrCreate([
@@ -397,11 +395,11 @@ class ImportExportService
     private function updateTransates(Product $entity, array $data): void
     {
         foreach (get_active_languages() as $lang) {
-            if (isset($data['name_' . $lang->slug])) {
+            if (isset($data['name_'.$lang->slug])) {
                 $entity->translatable()->updateOrCreate([
                     'language_id' => $lang->id,
                 ], [
-                    'value' => $data['name_' . $lang->slug],
+                    'value' => $data['name_'.$lang->slug],
                 ]);
             }
         }
@@ -421,7 +419,7 @@ class ImportExportService
 
     public function exportToGoogleSheets(?int $categoryId = null)
     {
-        if (!setting('import_export.google_sheets_enabled', false)) {
+        if (! setting('import_export.google_sheets_enabled', false)) {
             throw new \Exception('Google Sheets integration is not enabled');
         }
 
@@ -473,11 +471,11 @@ class ImportExportService
             }
             $client = $this->getGoogleClient();
             $service = new Sheets($client);
-            $spreadsheetName = $this->template->name . ' - ' . now()->format('Y-m-d');
+            $spreadsheetName = $this->template->name.' - '.now()->format('Y-m-d');
             $spreadsheet = new Spreadsheet([
                 'properties' => [
-                    'title' => $spreadsheetName
-                ]
+                    'title' => $spreadsheetName,
+                ],
             ]);
 
             $spreadsheet = $service->spreadsheets->create($spreadsheet);
@@ -488,7 +486,7 @@ class ImportExportService
             // Log the main error
             Log::error('Failed during spreadsheet creation', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
             throw $e;
         }
@@ -507,22 +505,22 @@ class ImportExportService
             $permission = new \Google\Service\Drive\Permission([
                 'type' => 'user',
                 'role' => 'writer',
-                'emailAddress' => $email
+                'emailAddress' => $email,
             ]);
 
             // Add permission to the file
             $driveService->permissions->create($spreadsheetId, $permission, [
-                'sendNotificationEmail' => true
+                'sendNotificationEmail' => true,
             ]);
 
             Log::info('Spreadsheet shared successfully', [
                 'spreadsheet_id' => $spreadsheetId,
-                'shared_with' => $email
+                'shared_with' => $email,
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to share spreadsheet', [
                 'spreadsheet_id' => $spreadsheetId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -543,16 +541,16 @@ class ImportExportService
         }
 
         // Clear existing data
-        $clearRange = 'Sheet1!A1:Z' . (count($values) + 100);
-        $clearBody = new ClearValuesRequest();
+        $clearRange = 'Sheet1!A1:Z'.(count($values) + 100);
+        $clearBody = new ClearValuesRequest;
         $service->spreadsheets_values->clear($spreadsheetId, $clearRange, $clearBody);
 
         $body = new ValueRange([
-            'values' => $values
+            'values' => $values,
         ]);
 
         $params = [
-            'valueInputOption' => 'RAW'
+            'valueInputOption' => 'RAW',
         ];
 
         $range = 'Sheet1!A1';
@@ -565,14 +563,14 @@ class ImportExportService
                         'sheetId' => 0,
                         'dimension' => 'COLUMNS',
                         'startIndex' => $columnIndex,
-                        'endIndex' => $columnIndex + 1
-                    ]
-                ]
+                        'endIndex' => $columnIndex + 1,
+                    ],
+                ],
             ];
         }
 
         $batchUpdateRequest = new BatchUpdateSpreadsheetRequest([
-            'requests' => $requests
+            'requests' => $requests,
         ]);
 
         $service->spreadsheets->batchUpdate($spreadsheetId, $batchUpdateRequest);
@@ -580,7 +578,7 @@ class ImportExportService
 
     private function getGoogleClient(): \Google_Client
     {
-        $client = new \Google_Client();
+        $client = new \Google_Client;
         $client->setApplicationName('ImportExport Service');
 
         // Get service account JSON from settings
@@ -593,7 +591,7 @@ class ImportExportService
         // Set scopes
         $client->setScopes([
             Sheets::SPREADSHEETS,
-            Drive::DRIVE_FILE
+            Drive::DRIVE_FILE,
         ]);
 
         // Make sure we act as the service account
@@ -610,7 +608,7 @@ class ImportExportService
     public function importFromGoogleSheets(): array
     {
         // Check if Google Sheets is enabled
-        if (!setting('import_export.google_sheets_enabled', false)) {
+        if (! setting('import_export.google_sheets_enabled', false)) {
             throw new \Exception('Google Sheets integration is not enabled');
         }
 
@@ -672,7 +670,7 @@ class ImportExportService
                     Log::error('Failed to import product from Google Sheets', [
                         'product' => $product,
                         'error' => $e->getMessage(),
-                        'trace' => $e->getTraceAsString()
+                        'trace' => $e->getTraceAsString(),
                     ]);
                     $errors++;
                 }
@@ -687,10 +685,10 @@ class ImportExportService
             Log::error('Error importing from Google Sheets', [
                 'spreadsheet_id' => $spreadsheetId,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
-            throw new \Exception('Failed to import from Google Sheets: ' . $e->getMessage());
+            throw new \Exception('Failed to import from Google Sheets: '.$e->getMessage());
         }
     }
 }
