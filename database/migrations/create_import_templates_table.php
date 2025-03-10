@@ -13,6 +13,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->json('fields');
+            $table->string('google_sheets_link')->nullable();
             $table->timestamps();
         });
     }
