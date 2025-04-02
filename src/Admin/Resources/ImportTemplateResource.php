@@ -55,15 +55,15 @@ class ImportTemplateResource extends Resource
         $referenceAttributes = [];
         $attributes = Attribute::query()->select('id', 'name')->get();
         foreach ($attributes as $attribute) {
-            $referenceAttributes['attribute_' . $attribute->id] = $attribute->name;
+            $referenceAttributes['attribute_'.$attribute->id] = $attribute->name;
         }
         foreach (get_active_languages() as $lang) {
-            $multiLangName['name_' . $lang->slug] = 'Name (' . $lang->name . ')';
-            $seoFields['title_' . $lang->slug] = 'Title (' . $lang->name . ')';
-            $seoFields['heading_' . $lang->slug] = 'Heading (' . $lang->name . ')';
-            $seoFields['summary_' . $lang->slug] = 'Summary (' . $lang->name . ')';
-            $seoFields['content_' . $lang->slug] = 'Content (' . $lang->name . ')';
-            $seoFields['description_' . $lang->slug] = 'Meta Description (' . $lang->name . ')';
+            $multiLangName['name_'.$lang->slug] = 'Name ('.$lang->name.')';
+            $seoFields['title_'.$lang->slug] = 'Title ('.$lang->name.')';
+            $seoFields['heading_'.$lang->slug] = 'Heading ('.$lang->name.')';
+            $seoFields['summary_'.$lang->slug] = 'Summary ('.$lang->name.')';
+            $seoFields['content_'.$lang->slug] = 'Content ('.$lang->name.')';
+            $seoFields['description_'.$lang->slug] = 'Meta Description ('.$lang->name.')';
         }
         $fieldList = [
             ...$multiLangName,
@@ -134,7 +134,7 @@ class ImportTemplateResource extends Resource
                         ])->action(function (ImportTemplate $record, $data) {
                             $service = new ImportExportService($record);
                             $result = $service->import($data['file']);
-                            Notification::make()->title('Import finished. Success: ' . $result['success'] . ' Errors: ' . $result['errors'])->success()->send();
+                            Notification::make()->title('Import finished. Success: '.$result['success'].' Errors: '.$result['errors'])->success()->send();
                         }),
                     Action::make('importFromGoogleSheets')
                         ->label(__('import_export::trans.import_from_google_sheets'))
@@ -161,7 +161,7 @@ class ImportTemplateResource extends Resource
                             return setting('import_export.google_sheets_enabled', false) &&
                                 ! empty($record->google_sheets_link);
                         }),
-                    Action::make('copy_link')->icon('heroicon-o-link')->url(fn(ImportTemplate $record) => 'https://docs.google.com/spreadsheets/d/' . $record->google_sheets_link . '/edit?usp=sharing')->visible(fn(ImportTemplate $record) => $record->google_sheets_link)->openUrlInNewTab(),
+                    Action::make('copy_link')->icon('heroicon-o-link')->url(fn (ImportTemplate $record) => 'https://docs.google.com/spreadsheets/d/'.$record->google_sheets_link.'/edit?usp=sharing')->visible(fn (ImportTemplate $record) => $record->google_sheets_link)->openUrlInNewTab(),
                 ]),
                 EditAction::make(),
                 ActionsDeleteAction::make(),

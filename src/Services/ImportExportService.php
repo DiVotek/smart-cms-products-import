@@ -47,7 +47,7 @@ class ImportExportService
         });
         $headers = [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $this->template->name . '_' . now()->toDateTimeString() . '.csv"',
+            'Content-Disposition' => 'attachment; filename="'.$this->template->name.'_'.now()->toDateTimeString().'.csv"',
         ];
         $callback = function () use ($products) {
             $handle = fopen('php://output', 'w');
@@ -324,7 +324,7 @@ class ImportExportService
         $slug = Str::slug($product['name']);
         if (Product::query()->where('slug', $slug)->exists()) {
             do {
-                $slug = $slug . '-' . Str::random(5);
+                $slug = $slug.'-'.Str::random(5);
             } while (Product::query()->where('slug', $slug)->exists());
         }
         $entity = new Product;
@@ -363,20 +363,20 @@ class ImportExportService
             $description = null;
             $summary = null;
             $content = null;
-            if (isset($data['title_' . $lang->slug])) {
-                $title = $data['title_' . $lang->slug];
+            if (isset($data['title_'.$lang->slug])) {
+                $title = $data['title_'.$lang->slug];
             }
-            if (isset($data['description_' . $lang->slug])) {
-                $description = $data['description_' . $lang->slug];
+            if (isset($data['description_'.$lang->slug])) {
+                $description = $data['description_'.$lang->slug];
             }
-            if (isset($data['summary_' . $lang->slug])) {
-                $summary = $data['summary_' . $lang->slug];
+            if (isset($data['summary_'.$lang->slug])) {
+                $summary = $data['summary_'.$lang->slug];
             }
-            if (isset($data['heading_' . $lang->slug])) {
-                $heading = $data['heading_' . $lang->slug];
+            if (isset($data['heading_'.$lang->slug])) {
+                $heading = $data['heading_'.$lang->slug];
             }
-            if (isset($data['content_' . $lang->slug])) {
-                $content = $data['content_' . $lang->slug];
+            if (isset($data['content_'.$lang->slug])) {
+                $content = $data['content_'.$lang->slug];
             }
             if ($title) {
                 $entity->seo()->updateOrCreate([
@@ -395,11 +395,11 @@ class ImportExportService
     private function updateTransates(Product $entity, array $data): void
     {
         foreach (get_active_languages() as $lang) {
-            if (isset($data['name_' . $lang->slug])) {
+            if (isset($data['name_'.$lang->slug])) {
                 $entity->translatable()->updateOrCreate([
                     'language_id' => $lang->id,
                 ], [
-                    'value' => $data['name_' . $lang->slug],
+                    'value' => $data['name_'.$lang->slug],
                 ]);
             }
         }
@@ -471,7 +471,7 @@ class ImportExportService
             }
             $client = $this->getGoogleClient();
             $service = new Sheets($client);
-            $spreadsheetName = $this->template->name . ' - ' . now()->format('Y-m-d');
+            $spreadsheetName = $this->template->name.' - '.now()->format('Y-m-d');
             $spreadsheet = new Spreadsheet([
                 'properties' => [
                     'title' => $spreadsheetName,
@@ -541,7 +541,7 @@ class ImportExportService
         }
 
         // Clear existing data
-        $clearRange = 'Sheet1!A1:Z' . (count($values) + 100);
+        $clearRange = 'Sheet1!A1:Z'.(count($values) + 100);
         $clearBody = new ClearValuesRequest;
         $service->spreadsheets_values->clear($spreadsheetId, $clearRange, $clearBody);
 
@@ -688,7 +688,7 @@ class ImportExportService
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            throw new \Exception('Failed to import from Google Sheets: ' . $e->getMessage());
+            throw new \Exception('Failed to import from Google Sheets: '.$e->getMessage());
         }
     }
 }
