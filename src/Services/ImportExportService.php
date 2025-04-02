@@ -47,7 +47,7 @@ class ImportExportService
         });
         $headers = [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="'.$this->template->name.'_'.now()->toDateTimeString().'.csv"',
+            'Content-Disposition' => 'attachment; filename="' . $this->template->name . '_' . now()->toDateTimeString() . '.csv"',
         ];
         $callback = function () use ($products) {
             $handle = fopen('php://output', 'w');
@@ -77,7 +77,7 @@ class ImportExportService
         $orderedFields[] = 'id';
         $orderedFields[] = 'name';
         $orderedFields[] = 'category_id';
-        $orderedFields[] = 'origin_price';
+        $orderedFields[] = 'price';
 
         foreach ($originalFields as $field) {
             if (! in_array($field, $orderedFields)) {
@@ -113,8 +113,8 @@ class ImportExportService
                         $value = $product->stock_status->name;
                     }
                     break;
-                case 'origin_price':
-                    $value = $product->origin_price;
+                case 'price':
+                    $value = $product->price;
                     break;
                 case 'sorting':
                     $value = $product->sorting;
@@ -267,8 +267,8 @@ class ImportExportService
                     }
                     $product->stock_status_id = $stockStatus->id;
                     break;
-                case 'origin_price':
-                    $product->origin_price = $value;
+                case 'price':
+                    $product->price = $value;
                     break;
                 case 'sorting':
                     $product->sorting = (int) $value;
@@ -307,7 +307,7 @@ class ImportExportService
     {
         $category_id = $product['category_id'] ?? null;
         $name = $product['name'] ?? null;
-        $price = $product['origin_price'] ?? null;
+        $price = $product['price'] ?? null;
         if (! $name || $name == '') {
             throw new \Exception('Name is required');
         }
@@ -324,7 +324,7 @@ class ImportExportService
         $slug = Str::slug($product['name']);
         if (Product::query()->where('slug', $slug)->exists()) {
             do {
-                $slug = $slug.'-'.Str::random(5);
+                $slug = $slug . '-' . Str::random(5);
             } while (Product::query()->where('slug', $slug)->exists());
         }
         $entity = new Product;
@@ -338,7 +338,7 @@ class ImportExportService
         }
         $entity->category_id = $category->id ?? null;
         $entity->stock_status_id = StockStatus::query()->where('name', $product['stock_status_id'] ?? 'In Stock')->first()?->id ?? StockStatus::query()->first()?->id ?? null;
-        $entity->origin_price = $product['origin_price'];
+        $entity->price = $product['price'];
         $entity->sorting = $product['sorting'] ?? 0;
         $images = explode(',', $product['images'] ?? '');
         if (! is_array($images)) {
@@ -363,20 +363,20 @@ class ImportExportService
             $description = null;
             $summary = null;
             $content = null;
-            if (isset($data['title_'.$lang->slug])) {
-                $title = $data['title_'.$lang->slug];
+            if (isset($data['title_' . $lang->slug])) {
+                $title = $data['title_' . $lang->slug];
             }
-            if (isset($data['description_'.$lang->slug])) {
-                $description = $data['description_'.$lang->slug];
+            if (isset($data['description_' . $lang->slug])) {
+                $description = $data['description_' . $lang->slug];
             }
-            if (isset($data['summary_'.$lang->slug])) {
-                $summary = $data['summary_'.$lang->slug];
+            if (isset($data['summary_' . $lang->slug])) {
+                $summary = $data['summary_' . $lang->slug];
             }
-            if (isset($data['heading_'.$lang->slug])) {
-                $heading = $data['heading_'.$lang->slug];
+            if (isset($data['heading_' . $lang->slug])) {
+                $heading = $data['heading_' . $lang->slug];
             }
-            if (isset($data['content_'.$lang->slug])) {
-                $content = $data['content_'.$lang->slug];
+            if (isset($data['content_' . $lang->slug])) {
+                $content = $data['content_' . $lang->slug];
             }
             if ($title) {
                 $entity->seo()->updateOrCreate([
@@ -395,11 +395,11 @@ class ImportExportService
     private function updateTransates(Product $entity, array $data): void
     {
         foreach (get_active_languages() as $lang) {
-            if (isset($data['name_'.$lang->slug])) {
+            if (isset($data['name_' . $lang->slug])) {
                 $entity->translatable()->updateOrCreate([
                     'language_id' => $lang->id,
                 ], [
-                    'value' => $data['name_'.$lang->slug],
+                    'value' => $data['name_' . $lang->slug],
                 ]);
             }
         }
@@ -471,7 +471,7 @@ class ImportExportService
             }
             $client = $this->getGoogleClient();
             $service = new Sheets($client);
-            $spreadsheetName = $this->template->name.' - '.now()->format('Y-m-d');
+            $spreadsheetName = $this->template->name . ' - ' . now()->format('Y-m-d');
             $spreadsheet = new Spreadsheet([
                 'properties' => [
                     'title' => $spreadsheetName,
@@ -541,7 +541,7 @@ class ImportExportService
         }
 
         // Clear existing data
-        $clearRange = 'Sheet1!A1:Z'.(count($values) + 100);
+        $clearRange = 'Sheet1!A1:Z' . (count($values) + 100);
         $clearBody = new ClearValuesRequest;
         $service->spreadsheets_values->clear($spreadsheetId, $clearRange, $clearBody);
 
@@ -688,7 +688,7 @@ class ImportExportService
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            throw new \Exception('Failed to import from Google Sheets: '.$e->getMessage());
+            throw new \Exception('Failed to import from Google Sheets: ' . $e->getMessage());
         }
     }
 }
