@@ -1,6 +1,5 @@
 {
     "name": "smart-cms/import-export",
-    "version": "1.0.0",
     "description": "This is import-export package for smart-cms/store",
     "keywords": [
         "SmartCms",
